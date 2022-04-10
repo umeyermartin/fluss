@@ -1,0 +1,2 @@
+python3 scan_to_pdf_V06.py
+sudo mv /home/pi/scan_server/temp_out/*.* /home/pi/nextcloud/scan/
