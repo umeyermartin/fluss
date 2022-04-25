@@ -103,6 +103,13 @@ while True:
                     except :
                         metadata[i] = ""
                     metadata_string += " " + i + "=" + metadata[i]
+
+                try :
+                    sid = reader.documentInfo['/SID']
+                    metadata_string += " " + "sid" + "=" + sid
+                except :
+                    pass
+
                 try :
                     erledigt = reader.documentInfo['/Erledigt']
                 except :
@@ -339,9 +346,62 @@ while True:
             os.system("rm " + source_dir + selected["taskname"] + ".pdf")
             os.system("rm " + source_dir + selected["taskname"] + ".txt")
 
+    # closest document
+    elif k[0] == 'k':
+        if selected["taskname"] != "" :
+            selector = analyze_command_parameters(k[2:]) 
+        
+            text_f = open(source_dir + selected["taskname"] + ".txt", mode="r")
+            text_all = text_f.read()
+            text_f.close()
+            searches = re.findall(r'\S\S\S\S\S+',text_all)[:100]
+            level = 0
+            filename_l = ""
+            text_l = ""
+            matches_l = []
+            for filename in sorted(glob.glob(source_dir + '*.txt')):
+                if os.path.isfile(filename) and ".txt" in filename and source_dir + selected["taskname"] + ".txt" != filename :
+
+                    text_c = open(filename, mode="r")
+                    text_all_c = text_c.read()
+                    text_c.close()
+                    count_c = 0
+                    matches = []
+                    for s in searches :
+                        if s in text_all_c :
+                            count_c += 1
+                            matches.append(s)
+                    if count_c > level :
+                        filename_l = filename
+                        level = count_c
+                        text_l = text_all
+                        matches_l = []
+                        matches_l = matches
+            print(filename_l, level, "\n", matches_l)          
+
+            # merger = PdfFileMerger()
+            # text_all = ""
+            # taskname_temp = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
+            # for ss in convert_from_path(source_dir + selected["taskname"] + ".pdf") :
+            #     result =  pytesseract.image_to_pdf_or_hocr(ss, lang="deu", config=tessdata_dir_config)
+            #     pdf_file_in_memory = io.BytesIO(result)        
+            #     merger.append(pdf_file_in_memory)   
+            #     text = pytesseract.image_to_string(ss, lang="deu")
+            #     text_all += text
+
+            # for i,j in selector.items() :
+            #     writer.addMetadata({"/" + config_parms["metadata_parameter"][i]: j})
+
+            # merger.write(source_dir + taskname_temp + ".pdf")
+            # merger.close()
+
+            # os.system("rm " + source_dir + selected["taskname"] + ".pdf")
+            # os.system("rm " + source_dir + selected["taskname"] + ".txt")
+
     elif k[0] == 'h':
         print("List of actions ...")
         print("... h=help")
+        print("... k=closest document")
         print("... l=list open tasks")
         print("... la=list all tasks")
         print("... p=view pdf")
