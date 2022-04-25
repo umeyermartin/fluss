@@ -117,8 +117,12 @@ for r in request_list :
                 os.rename(f, f.replace(".tif","_deleted.tif"))
     
     if files :
-        merger.addMetadata(metadata)
-    
+
+        z = re.findall('SID:(\d\d\d\d\d\d)', text_all)
+        if len(z) > 0
+            metadata["/SID"]      = z[0]
+
+        merger.addMetadata(metadata)    
         merger.write(pdf_file)
         merger.close()
     
