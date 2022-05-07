@@ -9,7 +9,13 @@ def config():
 
     # --- Metadaten ---
     config_parms["metadata_parameter"]              = dict(m="Mandant", b="Beschreibung", a="Aufgabe")
-    config_parms["metadata_value_m"]                = dict(g="gerda", m="m-m-cs", p="privat")
+    config_parms["metadata_value_Mandant"]          = dict(p="privat", g="gerda", m="m-m-cs")
+
+    # --- Programme ---
+    config_parms["theme"]                           = 'Light blue 2'
+    config_parms["picture viewer"]                  = "gpicview"
+    config_parms["PDF viewer"]                      = "xreader"
+    config_parms["Text viewer"]                     = "xed"
     
     # --- Scan-Konfiguration ---
     config_parms["scan_tesseract_cmd"]              = '/usr/bin/tesseract'
@@ -28,8 +34,8 @@ def config():
     config_parms["tasks_temp_dir"]                  = "/home/ulrich/Nextcloud/scan/temp/"
     
     # --- eMail-Tasks-Konfiguration ---
-    config_parms["emails_server"]                   = "exchange.ionos.eu"
-    config_parms["emails_user"]                     = "yyy@xxx.com" 
+    config_parms["emails_server"]                   = "sss"
+    config_parms["emails_user"]                     = "uuu" 
     config_parms["emails_password"]                 = "ppp"
     config_parms["emails_target_dir"]               = "/home/ulrich/Nextcloud/UFD/m-m-cs/09-Abrechnung/Monatsabschluss/2022.XX/"
     config_parms["emails_parameter"]                = dict(m="mail sender",s="subject", d="date_from", e="date_to", l="limit", p="pdf-attachment")

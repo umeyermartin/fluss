@@ -38,7 +38,7 @@ def analyze_command_parameters(cmd_string) :
                     for ii,jj in values_dict.items() :
                         if result[i+1].strip()[0:1] == ii :
                             selector[j] = jj
-                except IndexError:
+                except (KeyError, IndexError) :
                     selector[j] = result[i+1].strip()
 
     return(selector)
