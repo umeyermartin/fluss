@@ -1,2 +1,2 @@
-python3 scan_to_pdf_V06.py
+python3 FLUSS_scans_ui_V01.py
 sudo mv /home/pi/scan_server/temp_out/*.* /home/pi/nextcloud/scan/

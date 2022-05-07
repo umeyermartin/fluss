@@ -16,6 +16,7 @@ import colored
 from colored import stylize
 import config
 import pikepdf
+from PIL import Image
 
 def analyze_command_parameters(cmd_string) :
 
@@ -187,14 +188,24 @@ while True:
             merger = PdfFileMerger(strict=False)
 
             for i,j in file_s.items() :
-                if j["filename"].endswith(".pdf"):
+                if not j["filename"].endswith(".pdf"):
                     path_with_file = os.path.join(source_dir, j["filename"])
+                    image_temp = Image.open(path_with_file)
+                    image_temp.save(path_with_file.replace(".png",".pdf"))
 
-                    my_pdf = pikepdf.Pdf.open(path_with_file, allow_overwriting_input=True)
-                    my_pdf.save(path_with_file)
+            for f in sorted(glob.glob(source_dir+"*.*")):
+                if os.path.isfile(f) :
 
-                    merger.append(path_with_file, bookmark=j["filename"], pages=None, import_bookmarks=False )
-                    print("... PDF-file ", j["filename"], " merged")
+                    filename = f.replace(source_dir,"")
+
+                    if filename.endswith(".pdf"):
+                        path_with_file = f
+
+                        my_pdf = pikepdf.Pdf.open(path_with_file, allow_overwriting_input=True)
+                        my_pdf.save(path_with_file)
+                        merger.append(path_with_file, bookmark=filename, pages=None, import_bookmarks=False )
+
+                        print("... PDF-file ", filename, " merged")
 
             target_file = datetime.now().strftime("%Y-%m-%d_%H:%M:%S") + "_merged.pdf"
             merger.write(target_dir + target_file)
@@ -204,6 +215,7 @@ while True:
         print("List of actions ...")
         print("... h=help")
         print("... l=list files")
+        print("... m=merge pdfs")
         print("... p=view pdf")
         print("... t=view txt")
         print("... 99=select file from list")
