@@ -126,7 +126,7 @@ TESSDATA_PREFIX = config_parms["tasks_tesseract_prefix"]
 tessdata_dir_config = config_parms["tasks_tesseract_config"]
 source_dir = config_parms["tasks_source_dir"]
 
-sg.theme('Light blue 2')
+sg.theme(config_parms["theme"])
 selector = {} 
 data_dict = {} 
 
@@ -193,7 +193,6 @@ while True:
                 window_input.close()
                 break
             if event_input == "Apply":
-                print("APPLY")
                 try : 
                     selector_m = values_input["-SENDER-"]
                 except (KeyError, IndexError) :
@@ -212,16 +211,13 @@ while True:
                     selector_e = "9999-12-31"
                 selector_l = 50
 
-                print(date.fromisoformat(selector_d), date.fromisoformat(selector_e), selector_s)
-
                 messages = mb.fetch(criteria=AND(from_= selector_m, subject=selector_s, date_gte = date.fromisoformat(selector_d), date_lt = date.fromisoformat(selector_e)),limit = selector_l,reverse = True, bulk=True)
                 data_dict = {}
-                print(messages)
+
                 for msg in messages:
 
                     data_dict_line = {}
                     data_dict_line["DATE"] = msg.date.strftime("%Y-%m-%d_%H:%M:%S")
-                    print(msg.subject)
                     data_dict_line["SUBJECT"] = msg.subject.encode("ascii", "ignore").decode()
                     data_dict_line["SUBJECT"] = ''.join(s for s in msg.subject if s in string.printable or s in list("äöüÄÖÜß"))         
                     data_dict_line["SENDER"] = msg.from_
@@ -238,7 +234,6 @@ while True:
                 selector = {}
                 data = make_table(index, headings, data_dict, selector)
 
-                print(data_dict)
                 window['-TABLE-'].update(data)
                 break
 
@@ -248,8 +243,10 @@ while True:
         confirm_message = ""
         log_layout = [[sg.Multiline(key='-MULTILINE KEY-',  disabled=True, size=(70,40))]]
         window_log = sg.Window('Log', log_layout, ttk_theme='clam', resizable=True, finalize=True)
+        count = 0
 
         for l in values['-TABLE-'] :
+            count += 1
             ll = "01"
             key_data = data[int(l)][index_key]
             j = data_dict[key_data]
@@ -261,12 +258,13 @@ while True:
 
                     window_log['-MULTILINE KEY-'].print("... PDF attachment ", filename, " copied ") 
 
+        window_log['-MULTILINE KEY-'].print(count, " files exported") 
+
         while True :
             event_log, values_log = window_log.read()
             if event_log == sg.WIN_CLOSED or event_log == "Exit":
                 window_log.close()
                 break
-        break
 
     elif event == 'export Text':
 
@@ -274,15 +272,16 @@ while True:
         confirm_message = ""
         log_layout = [[sg.Multiline(key='-MULTILINE KEY-',  disabled=True, size=(70,40))]]
         window_log = sg.Window('Log', log_layout, ttk_theme='clam', resizable=True, finalize=True)
+        count = 0
 
         for l in values['-TABLE-'] :
+            count += 1
             key_data = data[int(l)][index_key]
             ll = "01"
             j = data_dict[key_data] 
 
             filename = config_parms["emails_target_dir"] + ll.strip() + "_" + j["DATE"] + "_" + j["msg"].subject.replace(" ","_") + ".pdf"
             #pdfkit.from_string(msg.html, filename)
-            print("TEXT", msg.text, "\nHTML", msg.html)
             if msg.html != "" :
                 pdfkit.from_string(msg.html, filename)
             else :
@@ -291,6 +290,8 @@ while True:
                 pdfkit.from_string(prefix + msg.text.replace("\n","<br>"), filename, options=options)
 
             window_log['-MULTILINE KEY-'].print("... PDF Text ", filename, " copied ") 
+
+        window_log['-MULTILINE KEY-'].print(count, " files exported") 
 
         while True :
             event_log, values_log = window_log.read()

@@ -548,10 +548,10 @@ while True:
             while True :
                 event_invoice, values_invoice = window_invoice.read()
                 if event_invoice == sg.WIN_CLOSED:
-                    window_modify.close()
+                    window_invoice.close()
                     break
                 if event_invoice == "Exit":
-                    window_input.close()
+                    window_invoice.close()
                     break
 
     if isinstance(event, tuple):
