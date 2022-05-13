@@ -87,7 +87,7 @@ tessdata_dir_config = config_parms["tasks_tesseract_config"]
 source_dir = config_parms["files_source_dir"]
 target_dir = config_parms["files_target_dir"]
 
-sg.theme('Light blue 2')
+sg.theme(config_parms["theme"])
 selector = {} 
 
 index, headings, data_dict = make_dict()
@@ -201,7 +201,6 @@ while True:
 
         for l in values['-TABLE-'] :
             filename = data[int(l)][index_key]
-            print
             if filename.endswith(".pdf"):
                 path_with_file = source_dir + filename
 

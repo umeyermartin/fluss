@@ -37,11 +37,14 @@ import sys
 import fitz
 import PySimpleGUI as sg
 from sys import exit
+import config
 
 
 def pdfviewer(fname):
 
-    sg.theme('Light blue 2')
+
+    config_parms = config.config()
+    sg.theme(config_parms["theme"])
 
     # if len(sys.argv) == 1:
     #     fname = sg.popup_get_file(
