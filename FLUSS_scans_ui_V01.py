@@ -155,8 +155,8 @@ layout = [[sg.Table(values=data[:][:], headings=headings, max_col_width=25,
                     expand_y=True,
                     enable_click_events=True,           # Comment out to not enable header and other clicks
                     right_click_menu=['&Right', ['&View']],
-                    tooltip='Scans')],
-          [sg.Button('Scan'), sg.Button('Save')],
+                    tooltip='FLUSS Scans')],
+          [sg.Button('Scan'), sg.Button('Save'), sg.Button('Exit')],
           [sg.Text('Cell clicked:'), sg.T(k='-CLICKED-')]]
 
 window = sg.Window('FLUSS Scans', layout,
@@ -168,7 +168,13 @@ while True:
     event, values = window.read()
 
     if event == sg.WIN_CLOSED or event == "Exit" :
-        break
+
+        if len(data_dict.items()) > 0 :
+            result = sg.popup_ok_cancel("Durchgeführte Scans gehen verloren!")  # Shows OK and Cancel buttons
+            if result == "OK" :
+                break
+        else :
+            break
 
     elif event == 'Filter':
 
@@ -269,7 +275,7 @@ while True:
                         ttk_theme='clam',
                         resizable=True, finalize=True)
 
-                scan_command = "scanimage --format=tiff --batch=" + config_parms["scan_src_dir"] + data_dict_line["TASK"] + "_%d.tif --batch-start=100 --resolution 300 --source " + source + " -p -x 210.01 -y 297.364"
+                scan_command = "scanimage --format=tiff --batch=" + config_parms["scan_src_dir"] + data_dict_line["TASK"] + "_%d.tif --batch-start=100 --resolution 300 --source " + source    # + " -x 210.01 -y 297.364"
 
                 retval, output = runCommand(scan_command)
 
@@ -300,7 +306,8 @@ while True:
         count = 0
         for i,j in data_dict.items() :
             count += 1
-            sg.popup_notify("*** now merging pages file " + str(count) + " ***")
+            if count > 1 :
+                sg.popup_notify("*** now merging pages file " + str(count) + " ***")
             window_log['-MULTILINE KEY-'].print("*** now merging pages file " + str(count) + " ***")
 
             metadata = {}
@@ -336,7 +343,7 @@ while True:
             
             if files :
 
-                z = re.findall('SID:(\d\d\d\d\d\d)', text_all)
+                z = re.findall('[S5][Ii1][Dd]:(\d\d\d\d\d\d)', text_all.replace(" ",""))
                 if len(z) > 0 :
                     metadata["/SID"]      = z[0]
                     window_log['-MULTILINE KEY-'].print("... SID found " +  z[0])
@@ -349,9 +356,11 @@ while True:
                 text_f.write(text_all)
                 text_f.close()
                 window_log['-MULTILINE KEY-'].print("... files created " +  j["TASK"] + ".pdf" + " und " + j["TASK"] + ".txt")
+                runCommand("sudo mv /home/pi/scan_server/temp_out/*.* /home/pi/nextcloud/scan/")
+                window_log['-MULTILINE KEY-'].print("... files moved to Nextcloud")
             else :
                 window_log['-MULTILINE KEY-'].print("... no files found")
-        window_log['-MULTILINE KEY-'].print(count, " input files processed")
+        window_log['-MULTILINE KEY-'].print("***", count, "input files processed ***")
         while True :
             event_log, values_log = window_log.read()
             if event_log == sg.WIN_CLOSED or event_log == "Exit":
@@ -370,7 +379,6 @@ while True:
         for l in values['-TABLE-'] :
             key_data = data[int(l)][index_key]
             runCommand(config_parms["picture viewer"] + " " + config_parms["scan_src_dir"] + key_data + "_100.tif")
- 
 
     if isinstance(event, tuple):
         # TABLE CLICKED Event has value in format ('-TABLE=', '+CLICKED+', (row,col))

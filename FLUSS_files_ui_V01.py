@@ -109,7 +109,7 @@ layout = [[sg.Table(values=data[:][:], headings=headings, max_col_width=25,
                     enable_click_events=True,           # Comment out to not enable header and other clicks
                     right_click_menu=['&Right', ['&Convert', '&Delete', '&Merge', '&PDF', 'T&o Temp']],
                     tooltip='FLUSS files')],
-          [sg.Button('Filter'), sg.Button('Refresh'), sg.Button('Help'), sg.Button('Exit')],
+          [sg.Button('Filter'), sg.Button('Refresh'), sg.Button('Exit')],
           [sg.Text('Cell clicked:'), sg.T(k='-CLICKED-')]]
 
 window = sg.Window('FLUSS Files', layout,
@@ -271,7 +271,7 @@ while True:
 
         for l in values['-TABLE-'] :
             key_data = data[int(l)][index_key]
-            subprocess.call(config_parms["PDF viewer"] + " " + source_dir + key_data,shell=True)
+            subprocess.call(config_parms["PDF viewer"] + ' "' + source_dir + key_data + '"',shell=True)
  
     elif event == 'Text':
 
