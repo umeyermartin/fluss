@@ -135,8 +135,8 @@ layout = [[sg.Table(values=data[:][:], headings=headings, max_col_width=25,
                     expand_y=True,
                     enable_click_events=True,           # Comment out to not enable header and other clicks
                     right_click_menu=['&Right', ['&Delete', '&Finish', '&Modify', '&PDF', '&Text','&Register', 'T&o Temp', '&Invoice', '&View']],
-                    tooltip='This is a table')],
-          [sg.Button('New'), sg.Button('Filter'), sg.Button('Help'), sg.Button('Exit')],
+                    tooltip='FLUSS tasks table')],
+          [sg.Button('New'), sg.Button('Filter'), sg.Button('Refresh'), sg.Button('Exit')],
           [sg.Text('Cell clicked:'), sg.T(k='-CLICKED-')]]
 
 window = sg.Window('FLUSS Tasks', layout,
@@ -401,7 +401,6 @@ while True:
                     text_f.close()
 
                     os.system("rm " + source_dir + key_data + ".pdf")
-                    os.system("rm " + source_dir + key_data + ".txt")
 
                     window_register.close()
                     break
@@ -425,10 +424,13 @@ while True:
                 os.system("rm " + source_dir + key_data + ".txt")
                 confirm_message += "... Task " + key_data + " deleted\n"
 
-        sg.popup(confirm_message)
+        #sg.popup(confirm_message)
+
         index, headings, data_dict = make_dict()
         data = make_table(index, headings, data_dict, selector)
         window['-TABLE-'].update(data)
+
+    elif event == 'Refresh':
 
         index, headings, data_dict = make_dict()
         data = make_table(index, headings, data_dict, selector)
