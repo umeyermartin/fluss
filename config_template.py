@@ -34,9 +34,9 @@ def config():
     config_parms["tasks_temp_dir"]                  = "/home/ulrich/Nextcloud/scan/temp/"
     
     # --- eMail-Tasks-Konfiguration ---
-    config_parms["emails_server"]                   = "sss"
-    config_parms["emails_user"]                     = "uuu" 
-    config_parms["emails_password"]                 = "ppp"
+    config_parms["emails_server"]                   = "???"
+    config_parms["emails_user"]                     = "???" 
+    config_parms["emails_password"]                 = "???"
     config_parms["emails_target_dir"]               = "/home/ulrich/Nextcloud/UFD/m-m-cs/09-Abrechnung/Monatsabschluss/2022.XX/"
     config_parms["emails_parameter"]                = dict(m="mail sender",s="subject", d="date_from", e="date_to", l="limit", p="pdf-attachment")
     
@@ -48,6 +48,13 @@ def config():
     
     # --- Labels-Konfiguration ---
     config_parms["labels_target_dir"]                = "/home/ulrich/Nextcloud/UFD/m-m-cs/09-Abrechnung/Monatsabschluss/2022.XX/"
+    
+    # --- Signage-Konfiguration ---
+    config_parms["signage_source_file"]             = "/home/pi/nextcloud/signage/presentation.pdf"
+    config_parms["signage_temp_file"]               = "/home/pi/signage/presentation.pdf"
+    config_parms["signage_screen_size"]             = (1920,1080)
+    config_parms["signage_thumbnail_size"]          = (1920,1030)
+    config_parms["signage_time_slide"]              = 10
 
     return(config_parms)
 
